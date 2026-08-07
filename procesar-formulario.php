@@ -1,288 +1,411 @@
 <?php
-/**
- * PROCESADOR DE FORMULARIOS - KONSCIO3D HOUSING
- * Sistema de procesamiento y envío de emails para hosting IONOS
- * Compatible con Apache + PHP + SMTP
- */
 
-// ============================================
-// CONFIGURACIÓN
-// ============================================
+declare(strict_types=1);
 
-// Email de destino
-define('EMAIL_DESTINO', 'info@proyectakonscio.org');
+use Dotenv\Dotenv;
+use PHPMailer\PHPMailer\PHPMailer;
 
-// Configuración SMTP (para IONOS)
-define('SMTP_HOST', 'smtp.ionos.es');  // Servidor SMTP de IONOS
-define('SMTP_PORT', 587);                // Puerto TLS
-define('SMTP_USER', 'info@proyectakonscio.org');  // Tu email
-define('SMTP_PASS', '');  // ⚠️ DEBES AÑADIR TU CONTRASEÑA AQUÍ
+const MAX_POST_BYTES = 65536;
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW = 900;
+const ALLOWED_HOSTS = ['konsciohousing.org', 'www.konsciohousing.org'];
 
-// Configuración del sitio
-define('SITE_NAME', 'Konscio3D Housing');
-define('SITE_URL', 'https://konsciohousing.org');
-
-// ============================================
-// SEGURIDAD Y VALIDACIÓN
-// ============================================
-
-// Solo permitir POST
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: /index.html");
+function redirectTo(string $location): never
+{
+    header('Location: ' . $location, true, 303);
     exit;
 }
 
-// Protección contra CSRF básica
-session_start();
-
-// Protección antispam: honeypot
-if (!empty($_POST['bot-field'])) {
-    // Es un bot, redirigir sin procesar
-    header("Location: /gracias.html");
-    exit;
+function validationError(string $type = 'validacion'): never
+{
+    redirectTo('/error-formulario.html?error=' . rawurlencode($type));
 }
 
-// Limitar tasa de envíos (rate limiting básico)
-$ip = $_SERVER['REMOTE_ADDR'];
-$rate_limit_file = sys_get_temp_dir() . '/form_rate_' . md5($ip);
-$current_time = time();
+function postString(string $key): string
+{
+    $value = $_POST[$key] ?? '';
 
-if (file_exists($rate_limit_file)) {
-    $last_submission = (int)file_get_contents($rate_limit_file);
-    if (($current_time - $last_submission) < 60) {
-        // Menos de 1 minuto desde el último envío
-        die('Por favor, espera antes de enviar otro formulario.');
+    if (!is_string($value)) {
+        validationError();
     }
+
+    return $value;
 }
 
-file_put_contents($rate_limit_file, $current_time);
+function cleanLine(string $key, int $maxLength, bool $required = true): string
+{
+    $value = trim(postString($key));
+    $value = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $value) ?? '';
+    $value = trim(preg_replace('/\s+/u', ' ', $value) ?? '');
 
-// ============================================
-// OBTENER Y SANITIZAR DATOS
-// ============================================
-
-function sanitize_input($data) {
-    if (is_array($data)) {
-        return array_map('sanitize_input', $data);
+    if (($required && $value === '') || mb_strlen($value, 'UTF-8') > $maxLength) {
+        validationError();
     }
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-    return $data;
+
+    return $value;
 }
 
-// Obtener tipo de formulario
-$form_name = sanitize_input($_POST['form-name'] ?? 'desconocido');
+function cleanText(string $key, int $maxLength, bool $required = true): string
+{
+    $value = trim(postString($key));
+    $value = str_replace(["\r\n", "\r", "\0"], ["\n", "\n", ''], $value);
 
-// Datos comunes
-$nombre = sanitize_input($_POST['nombre'] ?? '');
-$email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    if (($required && $value === '') || mb_strlen($value, 'UTF-8') > $maxLength) {
+        validationError();
+    }
 
-// Validar email
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: /error-formulario.html?error=email");
-    exit;
+    return $value;
 }
 
-// ============================================
-// CONSTRUIR MENSAJE SEGÚN TIPO DE FORMULARIO
-// ============================================
+function allowedValue(string $key, array $allowed): string
+{
+    $value = cleanLine($key, 120);
 
-$subject = '';
-$message_body = '';
-$from_name = sanitize_input($nombre);
+    if (!in_array($value, $allowed, true)) {
+        validationError();
+    }
 
-switch ($form_name) {
-    case 'contacto':
-        $asunto_form = sanitize_input($_POST['asunto'] ?? '');
-        $mensaje = sanitize_input($_POST['mensaje'] ?? '');
-        $privacy = isset($_POST['privacy_consent']) ? 'Aceptado' : 'No aceptado';
-        
-        $subject = "[Contacto Web] $asunto_form";
-        $message_body = "
-╔══════════════════════════════════════════════════════╗
-║         NUEVO MENSAJE DE CONTACTO                    ║
-║         " . SITE_NAME . "                           ║
-╚══════════════════════════════════════════════════════╝
+    return $value;
+}
 
-📋 INFORMACIÓN DEL CONTACTO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-👤 Nombre:       $nombre
-📧 Email:        $email
-📌 Asunto:       $asunto_form
-✅ RGPD:         $privacy
+function envValue(string $key): string
+{
+    $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
 
-💬 MENSAJE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$mensaje
+    if (!is_string($value) || trim($value) === '') {
+        throw new RuntimeException('Falta la variable de entorno ' . $key);
+    }
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 Formulario:   Contacto
-🔗 Sitio web:    " . SITE_URL . "/contacto.html
-📅 Fecha/Hora:   " . date('d/m/Y H:i:s') . "
-🌍 IP:           " . $_SERVER['REMOTE_ADDR'] . "
-";
-        break;
+    return trim($value);
+}
 
-    case 'habitante':
-        $telefono = sanitize_input($_POST['telefono'] ?? 'No proporcionado');
-        $ubicacion = sanitize_input($_POST['ubicacion'] ?? '');
-        $situacion = sanitize_input($_POST['situacion_familiar'] ?? '');
-        $motivacion = sanitize_input($_POST['motivacion'] ?? '');
-        $privacy = isset($_POST['privacy_consent']) ? 'Aceptado' : 'No aceptado';
-        
-        $subject = "[Futuro Habitante] Nueva solicitud - $nombre";
-        $message_body = "
-╔══════════════════════════════════════════════════════╗
-║      SOLICITUD: QUIERO VIVIR EN KONSCIO3D           ║
-║         " . SITE_NAME . "                           ║
-╚══════════════════════════════════════════════════════╝
+function verifyRequestOrigin(): void
+{
+    $hostHeader = $_SERVER['HTTP_HOST'] ?? '';
+    $host = strtolower((string) parse_url('https://' . $hostHeader, PHP_URL_HOST));
 
-👤 DATOS PERSONALES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nombre:              $nombre
-Email:               $email
-Teléfono:            $telefono
-País/Ciudad:         $ubicacion
-Situación familiar:  $situacion
-RGPD:                $privacy
-
-💭 MOTIVACIÓN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$motivacion
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 Formulario:   Quiero Vivir
-🔗 Sitio web:    " . SITE_URL . "/unete.html
-📅 Fecha/Hora:   " . date('d/m/Y H:i:s') . "
-🌍 IP:           " . $_SERVER['REMOTE_ADDR'] . "
-";
-        break;
-
-    case 'colaborador':
-        $area = sanitize_input($_POST['area_experticia'] ?? '');
-        $contribucion = sanitize_input($_POST['contribucion'] ?? '');
-        $privacy = isset($_POST['privacy_consent']) ? 'Aceptado' : 'No aceptado';
-        
-        $subject = "[Colaborador] Nueva solicitud - $nombre";
-        $message_body = "
-╔══════════════════════════════════════════════════════╗
-║      SOLICITUD: QUIERO COLABORAR                     ║
-║         " . SITE_NAME . "                           ║
-╚══════════════════════════════════════════════════════╝
-
-👤 DATOS DEL COLABORADOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nombre:              $nombre
-Email:               $email
-Área de experticia:  $area
-RGPD:                $privacy
-
-🎯 CONTRIBUCIÓN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$contribucion
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 Formulario:   Quiero Colaborar
-🔗 Sitio web:    " . SITE_URL . "/unete.html
-📅 Fecha/Hora:   " . date('d/m/Y H:i:s') . "
-🌍 IP:           " . $_SERVER['REMOTE_ADDR'] . "
-";
-        break;
-
-    case 'inversor':
-        $telefono = sanitize_input($_POST['telefono'] ?? 'No proporcionado');
-        $tipo_inversion = sanitize_input($_POST['tipo_inversion'] ?? '');
-        $mensaje_inv = sanitize_input($_POST['mensaje'] ?? 'Sin mensaje adicional');
-        $privacy = isset($_POST['privacy_consent']) ? 'Aceptado' : 'No aceptado';
-        
-        $subject = "[Inversor] Interés en inversión - $nombre";
-        $message_body = "
-╔══════════════════════════════════════════════════════╗
-║      SOLICITUD: QUIERO INVERTIR                      ║
-║         " . SITE_NAME . "                           ║
-╚══════════════════════════════════════════════════════╝
-
-👤 DATOS DEL INVERSOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nombre/Organización:  $nombre
-Email:                $email
-Teléfono:             $telefono
-Tipo de inversión:    $tipo_inversion
-RGPD:                 $privacy
-
-💬 MENSAJE ADICIONAL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-$mensaje_inv
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌐 Formulario:   Quiero Invertir
-🔗 Sitio web:    " . SITE_URL . "/unete.html
-📅 Fecha/Hora:   " . date('d/m/Y H:i:s') . "
-🌍 IP:           " . $_SERVER['REMOTE_ADDR'] . "
-";
-        break;
-
-    default:
-        header("Location: /error-formulario.html?error=tipo");
+    if (!in_array($host, ALLOWED_HOSTS, true)) {
+        http_response_code(403);
         exit;
+    }
+
+    $source = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? '';
+    if ($source === '') {
+        return;
+    }
+
+    $sourceHost = strtolower((string) parse_url($source, PHP_URL_HOST));
+    if (!in_array($sourceHost, ALLOWED_HOSTS, true)) {
+        http_response_code(403);
+        exit;
+    }
 }
 
-// ============================================
-// ENVIAR EMAIL CON FUNCIÓN MAIL() DE PHP
-// ============================================
+function enforceRateLimit(string $storagePath, string $ipAddress, string $appKey): void
+{
+    $directory = $storagePath . '/rate-limit';
+    if (!is_dir($directory) && !mkdir($directory, 0750, true) && !is_dir($directory)) {
+        throw new RuntimeException('No se pudo crear el directorio de rate limiting');
+    }
 
-// Configurar encabezados del email
-$headers = array();
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-type: text/plain; charset=UTF-8';
-$headers[] = 'From: ' . SITE_NAME . ' <noreply@konsciohousing.org>';
-$headers[] = 'Reply-To: ' . $from_name . ' <' . $email . '>';
-$headers[] = 'X-Mailer: PHP/' . phpversion();
-$headers[] = 'X-Priority: 1 (Highest)';
-$headers[] = 'X-MSMail-Priority: High';
-$headers[] = 'Importance: High';
+    $identifier = hash_hmac('sha256', $ipAddress, $appKey);
+    $filePath = $directory . '/' . $identifier . '.json';
+    $handle = fopen($filePath, 'c+');
 
-// Convertir headers a string
-$headers_string = implode("\r\n", $headers);
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        throw new RuntimeException('No se pudo abrir el control de frecuencia');
+    }
 
-// Enviar email
-$enviado = mail(EMAIL_DESTINO, $subject, $message_body, $headers_string);
+    try {
+        rewind($handle);
+        $decoded = json_decode(stream_get_contents($handle) ?: '[]', true);
+        $timestamps = is_array($decoded) ? $decoded : [];
+        $now = time();
+        $timestamps = array_values(array_filter(
+            $timestamps,
+            static fn ($timestamp): bool => is_int($timestamp) && $timestamp > ($now - RATE_LIMIT_WINDOW)
+        ));
 
-// ============================================
-// LOGGING (OPCIONAL)
-// ============================================
+        if (count($timestamps) >= RATE_LIMIT_MAX) {
+            validationError('limite');
+        }
 
-// Guardar registro de envíos
-$log_file = __DIR__ . '/logs/formularios.log';
-$log_dir = dirname($log_file);
-
-if (!file_exists($log_dir)) {
-    @mkdir($log_dir, 0755, true);
+        $timestamps[] = $now;
+        rewind($handle);
+        ftruncate($handle, 0);
+        fwrite($handle, json_encode($timestamps, JSON_THROW_ON_ERROR));
+        fflush($handle);
+    } finally {
+        flock($handle, LOCK_UN);
+        fclose($handle);
+    }
 }
 
-$log_entry = sprintf(
-    "[%s] Formulario: %s | Email: %s | Estado: %s | IP: %s\n",
-    date('Y-m-d H:i:s'),
-    $form_name,
-    $email,
-    $enviado ? 'ENVIADO' : 'ERROR',
-    $_SERVER['REMOTE_ADDR']
-);
+function writeAuditLog(
+    string $storagePath,
+    string $appKey,
+    string $formName,
+    string $status,
+    string $email,
+    string $ipAddress,
+    string $detail = ''
+): void {
+    $logDirectory = $storagePath . '/logs';
+    if (!is_dir($logDirectory)) {
+        @mkdir($logDirectory, 0750, true);
+    }
 
-@file_put_contents($log_file, $log_entry, FILE_APPEND);
+    $record = [
+        'timestamp' => gmdate('c'),
+        'form' => $formName,
+        'status' => $status,
+        'email_hash' => hash_hmac('sha256', strtolower($email), $appKey),
+        'ip_hash' => hash_hmac('sha256', $ipAddress, $appKey),
+    ];
 
-// ============================================
-// REDIRECCIONAR
-// ============================================
+    if ($detail !== '') {
+        $record['detail'] = mb_substr(preg_replace('/\s+/u', ' ', $detail) ?? '', 0, 500, 'UTF-8');
+    }
 
-if ($enviado) {
-    // Éxito: redirigir a página de gracias
-    header("Location: /gracias.html?form=" . urlencode($form_name));
-} else {
-    // Error: redirigir a página de error
-    header("Location: /error-formulario.html?error=envio");
+    @file_put_contents(
+        $logDirectory . '/formularios.log',
+        json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
+        FILE_APPEND | LOCK_EX
+    );
 }
 
-exit;
-?>
+function buildMessage(string $formName, array $data, string $siteUrl): array
+{
+    $header = [
+        'Nuevo envío desde Konscio3D Housing',
+        '====================================',
+        '',
+    ];
+
+    return match ($formName) {
+        'contacto' => [
+            '[Contacto web] ' . $data['asunto'],
+            implode("\n", array_merge($header, [
+                'Formulario: Contacto',
+                'Nombre: ' . $data['nombre'],
+                'Email: ' . $data['email'],
+                'Asunto: ' . $data['asunto'],
+                'Consentimiento de privacidad: Aceptado',
+                '',
+                'Mensaje:',
+                $data['mensaje'],
+                '',
+                'Página: ' . $siteUrl . '/contacto.html',
+                'Fecha UTC: ' . gmdate('Y-m-d H:i:s'),
+            ])),
+        ],
+        'habitante' => [
+            '[Futuro habitante] Nueva solicitud - ' . $data['nombre'],
+            implode("\n", array_merge($header, [
+                'Formulario: Futuro habitante',
+                'Nombre: ' . $data['nombre'],
+                'Email: ' . $data['email'],
+                'Teléfono: ' . ($data['telefono'] ?: 'No proporcionado'),
+                'País/Ciudad: ' . $data['ubicacion'],
+                'Situación familiar: ' . $data['situacion_familiar'],
+                'Consentimiento de privacidad: Aceptado',
+                '',
+                'Motivación:',
+                $data['motivacion'],
+                '',
+                'Página: ' . $siteUrl . '/unete.html',
+                'Fecha UTC: ' . gmdate('Y-m-d H:i:s'),
+            ])),
+        ],
+        'colaborador' => [
+            '[Colaborador] Nueva solicitud - ' . $data['nombre'],
+            implode("\n", array_merge($header, [
+                'Formulario: Colaborador',
+                'Nombre: ' . $data['nombre'],
+                'Email: ' . $data['email'],
+                'Área de experiencia: ' . $data['area_experticia'],
+                'Consentimiento de privacidad: Aceptado',
+                '',
+                'Contribución:',
+                $data['contribucion'],
+                '',
+                'Página: ' . $siteUrl . '/unete.html',
+                'Fecha UTC: ' . gmdate('Y-m-d H:i:s'),
+            ])),
+        ],
+        'inversor' => [
+            '[Inversor] Interés en inversión - ' . $data['nombre'],
+            implode("\n", array_merge($header, [
+                'Formulario: Inversor',
+                'Nombre/Organización: ' . $data['nombre'],
+                'Email: ' . $data['email'],
+                'Teléfono: ' . ($data['telefono'] ?: 'No proporcionado'),
+                'Tipo de inversión: ' . $data['tipo_inversion'],
+                'Consentimiento de privacidad: Aceptado',
+                '',
+                'Mensaje:',
+                $data['mensaje'] ?: 'Sin mensaje adicional',
+                '',
+                'Página: ' . $siteUrl . '/unete.html',
+                'Fecha UTC: ' . gmdate('Y-m-d H:i:s'),
+            ])),
+        ],
+        default => throw new InvalidArgumentException('Tipo de formulario no permitido'),
+    };
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    redirectTo('/');
+}
+
+if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > MAX_POST_BYTES) {
+    validationError();
+}
+
+verifyRequestOrigin();
+
+if (postString('website') !== '' || postString('bot-field') !== '') {
+    redirectTo('/gracias.html');
+}
+
+$projectRoot = dirname(__DIR__);
+$storagePath = $projectRoot . '/storage';
+$autoloadPath = $projectRoot . '/vendor/autoload.php';
+
+if (!is_file($autoloadPath)) {
+    error_log('KonscioHousing: falta vendor/autoload.php');
+    validationError('configuracion');
+}
+
+require $autoloadPath;
+
+$formName = '';
+$email = '';
+$ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$appKey = '';
+
+try {
+    Dotenv::createImmutable($projectRoot)->safeLoad();
+
+    $appKey = envValue('APP_KEY');
+    $siteName = envValue('SITE_NAME');
+    $siteUrl = rtrim(envValue('SITE_URL'), '/');
+    $smtpHost = envValue('SMTP_HOST');
+    $smtpPort = filter_var(envValue('SMTP_PORT'), FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1, 'max_range' => 65535],
+    ]);
+    $smtpUser = envValue('SMTP_USER');
+    $smtpPassword = envValue('SMTP_PASS');
+    $mailTo = envValue('MAIL_TO');
+
+    if ($smtpPort === false || !filter_var($smtpUser, FILTER_VALIDATE_EMAIL) || !filter_var($mailTo, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException('Configuración SMTP inválida');
+    }
+
+    enforceRateLimit($storagePath, $ipAddress, $appKey);
+
+    $formName = cleanLine('form-name', 30);
+    if (!in_array($formName, ['contacto', 'habitante', 'colaborador', 'inversor'], true)) {
+        validationError('tipo');
+    }
+
+    $nombre = cleanLine('nombre', 120);
+    $email = strtolower(cleanLine('email', 254));
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        validationError('email');
+    }
+
+    if (postString('privacy_consent') !== 'acepto') {
+        validationError();
+    }
+
+    $data = ['nombre' => $nombre, 'email' => $email];
+
+    switch ($formName) {
+        case 'contacto':
+            $data['asunto'] = allowedValue('asunto', [
+                'Consulta general',
+                'Quiero vivir en el proyecto',
+                'Colaboración',
+                'Inversión',
+                'Prensa/Media',
+                'Otro',
+            ]);
+            $data['mensaje'] = cleanText('mensaje', 5000);
+            break;
+
+        case 'habitante':
+            $data['telefono'] = cleanLine('telefono', 40, false);
+            $data['ubicacion'] = cleanLine('ubicacion', 160);
+            $data['situacion_familiar'] = allowedValue('situacion_familiar', [
+                'Individual',
+                'Pareja',
+                'Familia (2-3 personas)',
+                'Familia (4+ personas)',
+            ]);
+            $data['motivacion'] = cleanText('motivacion', 5000);
+            break;
+
+        case 'colaborador':
+            $data['area_experticia'] = allowedValue('area_experticia', [
+                'Arquitectura',
+                'Ingeniería',
+                'Tecnología Blockchain',
+                'Construcción 3D',
+                'Sostenibilidad',
+                'Gobernanza',
+                'Otro',
+            ]);
+            $data['contribucion'] = cleanText('contribucion', 5000);
+            break;
+
+        case 'inversor':
+            $data['telefono'] = cleanLine('telefono', 40, false);
+            $data['tipo_inversion'] = allowedValue('tipo_inversion', [
+                'Inversión de impacto',
+                'Tokenización RWA',
+                'Patrocinio',
+                'Otro',
+            ]);
+            $data['mensaje'] = cleanText('mensaje', 5000, false);
+            break;
+    }
+
+    [$subject, $body] = buildMessage($formName, $data, $siteUrl);
+
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = $smtpHost;
+    $mail->Port = $smtpPort;
+    $mail->SMTPAuth = true;
+    $mail->Username = $smtpUser;
+    $mail->Password = $smtpPassword;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->CharSet = PHPMailer::CHARSET_UTF8;
+    $mail->Timeout = 15;
+
+    $mail->setFrom($smtpUser, $siteName);
+    $mail->addAddress($mailTo);
+    $mail->addReplyTo($email, $nombre);
+    $mail->Subject = $subject;
+    $mail->Body = $body;
+    $mail->isHTML(false);
+    $mail->send();
+
+    writeAuditLog($storagePath, $appKey, $formName, 'sent', $email, $ipAddress);
+    redirectTo('/gracias.html?form=' . rawurlencode($formName));
+} catch (Throwable $exception) {
+    $logKey = $appKey !== '' ? $appKey : 'temporary-log-key';
+    writeAuditLog(
+        $storagePath,
+        $logKey,
+        $formName !== '' ? $formName : 'unknown',
+        'error',
+        $email,
+        $ipAddress,
+        $exception->getMessage()
+    );
+    error_log('KonscioHousing form error: ' . $exception->getMessage());
+    validationError('envio');
+}
