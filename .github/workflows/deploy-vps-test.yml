@@ -1,0 +1,310 @@
+name: Test VPS release deployment
+
+on:
+  push:
+    branches:
+      - chore/prepare-vps-deployment
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: konsciohousing-vps-release-test
+  cancel-in-progress: true
+
+jobs:
+  deploy-test-release:
+    name: Build release on VPS
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      BASE: /var/www/konsciohousing.org
+      RELEASE_ID: ${{ github.sha }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Validate repository structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f index.html
+          test -f procesar-formulario.php
+          test -f composer.json
+          test -f composer.lock
+
+          test -d css
+          test -d js
+          test -d images
+          test -d _posts
+
+          if [ -f .env ]; then
+            echo "::error::.env must never exist in the repository"
+            exit 1
+          fi
+
+          echo "Repository structure OK"
+
+      - name: Configure SSH
+        shell: bash
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+
+          install -d -m 700 ~/.ssh
+
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/konsciohousing_actions
+          chmod 600 ~/.ssh/konsciohousing_actions
+
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Test VPS connection
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            '
+              set -eu
+
+              test "$(whoami)" = "deploy"
+
+              test -w /var/www/konsciohousing.org/releases
+
+              if test -r /var/www/konsciohousing.org/.env; then
+                echo "ERROR: deploy can read .env"
+                exit 1
+              fi
+
+              echo "SSH and permissions OK"
+            '
+
+      - name: Create release directory
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            "set -eu
+             RELEASE='$RELEASE'
+
+             case \"\$RELEASE\" in
+               /var/www/konsciohousing.org/releases/*) ;;
+               *)
+                 echo 'Invalid release path'
+                 exit 1
+                 ;;
+             esac
+
+             rm -rf \"\$RELEASE\"
+             mkdir -p \"\$RELEASE/public\"
+            "
+
+      - name: Upload public website
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          rsync \
+            -az \
+            --delete \
+            --prune-empty-dirs \
+            --include='/*.html' \
+            --include='/css/***' \
+            --include='/js/***' \
+            --include='/images/***' \
+            --include='/_posts/***' \
+            --include='/procesar-formulario.php' \
+            --include='/robots.txt' \
+            --include='/sitemap.xml' \
+            --exclude='*' \
+            -e "ssh -i ~/.ssh/konsciohousing_actions -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -p $VPS_PORT" \
+            ./ \
+            "$VPS_USER@$VPS_HOST:$RELEASE/public/"
+
+      - name: Upload Composer files
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          rsync \
+            -az \
+            -e "ssh -i ~/.ssh/konsciohousing_actions -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -p $VPS_PORT" \
+            composer.json \
+            composer.lock \
+            "$VPS_USER@$VPS_HOST:$RELEASE/"
+
+      - name: Prepare shared resources
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            "set -eu
+             cd '$RELEASE'
+
+             rm -f .env storage
+
+             ln -s ../../.env .env
+             ln -s ../../storage storage
+
+             test \"\$(readlink -f .env)\" = '/var/www/konsciohousing.org/.env'
+             test \"\$(readlink -f storage)\" = '/var/www/konsciohousing.org/storage'
+
+             echo 'Shared resources OK'
+            "
+
+      - name: Install PHP dependencies
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            "set -eu
+
+             composer install \
+               --working-dir='$RELEASE' \
+               --no-dev \
+               --prefer-dist \
+               --no-interaction \
+               --optimize-autoloader \
+               --no-progress
+            "
+
+      - name: Validate release
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            "set -eu
+
+             test -f '$RELEASE/public/index.html'
+             test -f '$RELEASE/public/procesar-formulario.php'
+             test -f '$RELEASE/vendor/autoload.php'
+
+             test -L '$RELEASE/.env'
+             test -L '$RELEASE/storage'
+
+             php -l '$RELEASE/public/procesar-formulario.php'
+
+             php -r \"
+               require '$RELEASE/vendor/autoload.php';
+
+               if (!class_exists('PHPMailer\\\\PHPMailer\\\\PHPMailer')) {
+                   fwrite(STDERR, 'PHPMailer unavailable\n');
+                   exit(1);
+               }
+
+               if (!class_exists('Dotenv\\\\Dotenv')) {
+                   fwrite(STDERR, 'Dotenv unavailable\n');
+                   exit(1);
+               }
+
+               echo 'PHP dependencies OK\n';
+             \"
+
+             echo 'Release validation OK'
+            "
+
+      - name: Report release
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          ssh \
+            -i ~/.ssh/konsciohousing_actions \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -p "$VPS_PORT" \
+            "$VPS_USER@$VPS_HOST" \
+            "echo
+             echo '========================================'
+             echo 'TEST RELEASE CREATED SUCCESSFULLY'
+             echo '========================================'
+             echo 'Release: $RELEASE'
+             echo 'Commit:  $RELEASE_ID'
+             echo
+             echo 'IMPORTANT: current was NOT modified.'
+             echo 'Apache was NOT modified.'
+             echo
+            "
