@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <title>Contacto - Konscio3D Housing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/legal-styles.css">
+    <style>
+        .contact-grid {display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--space-xl); margin-top: var(--space-lg);}
+        .contact-info {background: var(--color-light); padding: var(--space-lg); border-radius: 20px;}
+        .contact-item {display: flex; gap: var(--space-md); margin-bottom: var(--space-md); align-items: start;}
+        .contact-icon {width: 50px; height: 50px; border-radius: 50%; background: var(--color-green); color: var(--color-white); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;}
+        .form-group {margin-bottom: var(--space-md);}
+        .form-group label {display: block; font-weight: 600; margin-bottom: 0.5rem;}
+        .form-group input, .form-group select, .form-group textarea {width: 100%; padding: 0.75rem; border: 2px solid var(--color-gray-light); border-radius: 10px; font-family: var(--font-main); font-size: 1rem;}
+        .form-group textarea {min-height: 150px; resize: vertical;}
+        button[type="submit"] {width: 100%; padding: 1rem; background: var(--color-green); color: var(--color-white); border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: var(--transition);}
+        button[type="submit"]:hover {background: var(--color-green-dark); transform: translateY(-3px);}
+        .faq-section {background: var(--color-light); padding: var(--space-xl) 0; margin-top: var(--space-xl);}
+        .faq-item {background: var(--color-white); padding: var(--space-md); border-radius: 15px; margin-bottom: var(--space-md); cursor: pointer; transition: var(--transition);}
+        .faq-item:hover {box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);}
+        .faq-question {font-weight: 700; display: flex; justify-content: space-between; align-items: center;}
+        .faq-answer {margin-top: var(--space-sm); color: var(--color-gray); display: none;}
+        .faq-item.active .faq-answer {display: block;}
+        @media (max-width: 768px) {.contact-grid {grid-template-columns: 1fr;}}
+    </style>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P84KKG7R');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P84KKG7R"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="images/logo-konscio3d.svg" alt="Konscio3D Housing Logo" class="logo-image">
+            </a>
+            <button class="nav-toggle"><span></span><span></span><span></span></button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="el-proyecto.html">El Proyecto</a></li>
+                <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+                <li><a href="modelo-piloto.html">Modelo Piloto</a></li>
+                <li><a href="tecnologia.html">Tecnología</a></li>
+                <li><a href="vision-futuro.html">Visión y Futuro</a></li>
+                <li><a href="notikonscio.html">Notikonscio</a></li>
+                <li><a href="unete.html" class="btn-primary-nav">Únete</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero-simple">
+        <div class="hero-bg" style="background: linear-gradient(135deg, #3498DB 0%, #9B59B6 100%);"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content"><h1>Contacto</h1><p>Estamos aquí para resolver tus dudas</p></div>
+    </section>
+
+    <section class="story-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div><strong>Email</strong><p>info@proyectakonscio.org</p></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon" style="background: #3498DB;"><i class="fas fa-phone"></i></div>
+                        <div><strong>Teléfono</strong><p>+34 697 318 741</p></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon" style="background: #E67E22;"><i class="fas fa-map-marker-alt"></i></div>
+                        <div><strong>Ubicación</strong><p>Fundación Proyecta KONSCIO<br>Las Flores nº3 – 3ºC<br>18004 Granada, España</p></div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon" style="background: #9B59B6;"><i class="fas fa-clock"></i></div>
+                        <div><strong>Horario</strong><p>Lunes a Viernes<br>9:00 - 18:00 CET</p></div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Envíanos un Mensaje</h3>
+                    <form name="contacto" method="POST" action="/procesar-formulario.php" id="form-contacto">
+                        <input type="hidden" name="form-name" value="contacto">
+                        <input type="hidden" name="bot-field" value="">
+                        <div class="form-group"><label>Nombre *</label><input type="text" name="nombre" required></div>
+                        <div class="form-group"><label>Email *</label><input type="email" name="email" required></div>
+                        <div class="form-group"><label>Asunto *</label><select name="asunto" required><option value="">-- Selecciona --</option><option>Consulta general</option><option>Quiero vivir en el proyecto</option><option>Colaboración</option><option>Inversión</option><option>Prensa/Media</option><option>Otro</option></select></div>
+                        <div class="form-group"><label>Mensaje *</label><textarea name="mensaje" required placeholder="Cuéntanos en qué podemos ayudarte..."></textarea></div>
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" required name="privacy_consent" value="acepto">
+                                <span>He leído y acepto la <a href="politica-privacidad.html" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos personales conforme al RGPD. *</span>
+                            </label>
+                        </div>
+                        <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-label">FAQs</span>
+                <h2>Preguntas Frecuentes</h2>
+            </div>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">¿Cuándo estará listo el proyecto piloto? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">El proyecto piloto comenzará construcción en 2027 y estará habitado en 2028, según el roadmap actual.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">¿Cuánto cuesta una vivienda? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">El coste estimado es de 500-700€/m², significativamente menor que la construcción tradicional.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">¿Dónde estará ubicado el proyecto? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Estamos evaluando ubicaciones en dos regiones: (1) <strong>España/Portugal</strong> para el proyecto piloto europeo, y (2) <strong>Bolivia (50 hectáreas)</strong> para el primer proyecto de autoconstrucción organizada en América Latina, que servirá como modelo replicable para México, Colombia, Brasil, Perú, Argentina y Chile.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">¿Qué es la sociocracia? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Un modelo de gobernanza horizontal donde las decisiones se toman por consentimiento, garantizando que todas las voces sean escuchadas.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">¿Puedo invertir sin vivir en la comunidad? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">Sí, a través de tokenización RWA podrás participar económicamente en el ecosistema sin necesidad de ser habitante.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-brand">
+                    <img src="images/logo-konscio3d-footer.svg" alt="Konscio3D Housing" class="footer-logo">
+                    <p class="footer-tagline">Construir vivienda. Construir comunidad. Construir futuro.</p>
+                    <div class="social-links"><a href="https://www.facebook.com/ProyectaKonscio/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/proyectakonscio/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a><a href="https://www.linkedin.com/in/fundacionproyectakonscio-0b44b59" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a></div></div>
+                <div class="footer-col"><h4>Proyecto</h4><ul><li><a href="quienes-somos.html">Quiénes Somos</a></li><li><a href="modelo-piloto.html">Modelo Piloto</a></li><li><a href="tecnologia.html">Tecnología</a></li><li><a href="vision-futuro.html">Visión y Futuro</a></li></ul></div>
+                <div class="footer-col"><h4>Participa</h4><ul><li><a href="unete.html#habitante">Ser Habitante</a></li><li><a href="unete.html#colaborador">Colaborar</a></li><li><a href="unete.html#inversor">Invertir</a></li><li><a href="contacto.html">Contacto</a></li></ul></div>
+                <div class="footer-col"><h4>Legal</h4><ul><li><a href="aviso-legal.html">Aviso Legal</a></li><li><a href="politica-privacidad.html">Política de Privacidad</a></li><li><a href="politica-cookies.html">Cookies</a></li></ul></div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2026 Konscio3D Housing - Fundación Proyecta. Todos los derechos reservados.</p></div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script>
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

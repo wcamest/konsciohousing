@@ -1,0 +1,37 @@
+# Robots.txt para Konscio3D Housing
+# https://tudominio.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Páginas principales - rastreo permitido
+Allow: /index.html
+Allow: /el-proyecto.html
+Allow: /quienes-somos.html
+Allow: /modelo-piloto.html
+Allow: /tecnologia.html
+Allow: /vision-futuro.html
+Allow: /notikonscio.html
+Allow: /noticia-detalle.html
+Allow: /unete.html
+Allow: /contacto.html
+
+# Recursos estáticos
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Archivos de prueba - no rastrear
+Disallow: /test-
+Disallow: /_verificar-
+Disallow: /version.html
+
+# Sitemap
+Sitemap: https://tudominio.com/sitemap.xml
+
+# Crawl-delay para bots pesados
+User-agent: Baiduspider
+Crawl-delay: 5
+
+User-agent: Yandex
+Crawl-delay: 2

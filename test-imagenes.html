@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Imágenes</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .test-box { border: 2px solid #2ECC71; padding: 20px; margin: 20px 0; border-radius: 10px; background: #f9f9f9; }
+        img { max-width: 100%; border: 2px solid #ddd; margin: 10px 0; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test de Carga de Imágenes</h1>
+    
+    <div class="test-box">
+        <h2>Imagen 1: Impresora 3D</h2>
+        <p>Ruta: <code>images/impresora-3d-construccion.png</code></p>
+        <img src="images/impresora-3d-construccion.png" alt="Impresora 3D" onerror="this.nextElementSibling.style.display='block'" onload="this.nextElementSibling.nextElementSibling.style.display='block'">
+        <p class="error" style="display:none;">❌ ERROR: No se pudo cargar la imagen</p>
+        <p class="success" style="display:none;">✅ ÉXITO: Imagen cargada correctamente</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Imagen 2: Ecosistema</h2>
+        <p>Ruta: <code>images/ecosistema-konscio3d.png</code></p>
+        <img src="images/ecosistema-konscio3d.png" alt="Ecosistema" onerror="this.nextElementSibling.style.display='block'" onload="this.nextElementSibling.nextElementSibling.style.display='block'">
+        <p class="error" style="display:none;">❌ ERROR: No se pudo cargar la imagen</p>
+        <p class="success" style="display:none;">✅ ÉXITO: Imagen cargada correctamente</p>
+    </div>
+
+    <div class="test-box" style="background: #fff3cd; border-color: #ffc107;">
+        <h2>📋 Si ves ERRORES arriba:</h2>
+        <p><strong>Problema:</strong> La carpeta images/ no se subió a Netlify</p>
+        <p><strong>Solución:</strong></p>
+        <ol>
+            <li>Descarga TODO el proyecto desde aquí como ZIP</li>
+            <li>Descomprime el ZIP en tu ordenador</li>
+            <li>Verifica que la carpeta images/ está dentro con las 2 imágenes</li>
+            <li>Arrastra TODA la carpeta descomprimida a Netlify de nuevo</li>
+        </ol>
+    </div>
+
+    <div class="test-box" style="background: #d1ecf1; border-color: #0c5460;">
+        <h2>🔗 URLs directas para verificar:</h2>
+        <p>Prueba abrir estas URLs en tu navegador:</p>
+        <ul>
+            <li><a href="images/impresora-3d-construccion.png" target="_blank">images/impresora-3d-construccion.png</a></li>
+            <li><a href="images/ecosistema-konscio3d.png" target="_blank">images/ecosistema-konscio3d.png</a></li>
+        </ul>
+        <p>Si al hacer clic sale "404 Not Found" = las imágenes NO se subieron</p>
+    </div>
+</body>
+</html>

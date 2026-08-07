@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <title id="pageTitle">Noticia - Notikonscio</title>
+    <meta name="description" content="Lee las últimas noticias sobre Konscio3D Housing" id="pageDescription">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <style>
+        .article-hero {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+        
+        .article-hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .article-hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+        }
+        
+        .article-hero-content {
+            position: relative;
+            z-index: 2;
+            color: var(--color-white);
+            padding: 3rem;
+            width: 100%;
+        }
+        
+        .article-category {
+            display: inline-block;
+            background: var(--color-green);
+            color: var(--color-white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .article-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            max-width: 900px;
+        }
+        
+        .article-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+        
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .article-content-section {
+            padding: 4rem 0;
+        }
+        
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .article-body {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--color-dark-light);
+        }
+        
+        .article-body h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1rem;
+            color: var(--color-dark);
+        }
+        
+        .article-body p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .article-body ul,
+        .article-body ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+        
+        .article-body li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .article-body strong {
+            color: var(--color-dark);
+            font-weight: 600;
+        }
+        
+        .article-share {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--color-light);
+            border-radius: 20px;
+            text-align: center;
+        }
+        
+        .article-share h4 {
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--color-white);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .share-btn.facebook { background: #1877F2; }
+        .share-btn.twitter { background: #1DA1F2; }
+        .share-btn.linkedin { background: #0A66C2; }
+        .share-btn.whatsapp { background: #25D366; }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-green);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .article-hero {
+                height: 400px;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-hero-content {
+                padding: 2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P84KKG7R');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P84KKG7R"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="images/logo-konscio3d.svg" alt="Konscio3D Housing Logo" class="logo-image">
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="el-proyecto.html">El Proyecto</a></li>
+                <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+                <li><a href="modelo-piloto.html">Modelo Piloto</a></li>
+                <li><a href="tecnologia.html">Tecnología</a></li>
+                <li><a href="vision-futuro.html">Visión y Futuro</a></li>
+                <li><a href="notikonscio.html" class="active">Notikonscio</a></li>
+                <li><a href="unete.html" class="btn-primary-nav">Únete</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="article-hero" id="articleHero">
+        <img src="" alt="" class="article-hero-bg" id="heroImage">
+        <div class="article-hero-overlay"></div>
+        <div class="article-hero-content">
+            <div class="container">
+                <span class="article-category" id="articleCategory">Cargando...</span>
+                <h1 class="article-title" id="articleTitle">Cargando noticia...</h1>
+                <div class="article-meta">
+                    <span><i class="far fa-calendar"></i> <span id="articleDate">-</span></span>
+                    <span><i class="fas fa-user"></i> <span id="articleAuthor">-</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenido -->
+    <section class="article-content-section">
+        <div class="container">
+            <div class="article-container">
+                <a href="notikonscio.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver a Notikonscio
+                </a>
+                
+                <div class="article-body" id="articleBody">
+                    <p style="text-align: center; color: var(--color-gray);">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i><br>
+                        Cargando contenido...
+                    </p>
+                </div>
+
+                <!-- Compartir -->
+                <div class="article-share">
+                    <h4><i class="fas fa-share-alt"></i> Comparte esta noticia</h4>
+                    <div class="share-buttons">
+                        <a href="#" class="share-btn facebook" id="shareFacebook" target="_blank">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        <a href="#" class="share-btn twitter" id="shareTwitter" target="_blank">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="#" class="share-btn linkedin" id="shareLinkedin" target="_blank">
+                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        </a>
+                        <a href="#" class="share-btn whatsapp" id="shareWhatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Proyecto</h4>
+                    <ul>
+                        <li><a href="modelo-piloto.html">Modelo Piloto</a></li>
+                        <li><a href="tecnologia.html">Tecnología</a></li>
+                        <li><a href="vision-futuro.html">Visión y Futuro</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Fundación</h4>
+                    <ul>
+                        <li><a href="quienes-somos.html">Fundación Proyecta</a></li>
+                        <li><a href="quienes-somos.html#origen">Origen del proyecto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Comunidad</h4>
+                    <ul>
+                        <li><a href="unete.html">Únete</a></li>
+                        <li><a href="vision-futuro.html#manifiesto">Manifiesto Konscio3D</a></li>
+                        <li><a href="notikonscio.html">Notikonscio</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col footer-brand">
+                    <img src="images/logo-konscio3d-footer.svg" alt="Konscio3D Housing" class="footer-logo">
+                    <p class="footer-tagline">Construir vivienda. Construir comunidad. Construir futuro.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/ProyectaKonscio/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/proyectakonscio/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/fundacionproyectakonscio-0b44b59" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="aviso-legal.html">Aviso Legal</a></li>
+                        <li><a href="politica-privacidad.html">Política de Privacidad</a></li>
+                        <li><a href="politica-cookies.html">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Konscio3D Housing - Fundación Proyecta. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/noticias-loader.js"></script>
+    <script>
+        // Obtener ID de la noticia desde URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const noticiaId = urlParams.get('id');
+
+        async function loadNoticia() {
+            if (!noticiaId) {
+                window.location.href = 'notikonscio.html';
+                return;
+            }
+
+            try {
+                // Cargar noticia desde archivo Markdown (Decap CMS)
+                const noticia = await window.NoticiasLoader.getNoticiaById(noticiaId);
+                
+                if (!noticia) {
+                    throw new Error('Noticia no encontrada');
+                }
+
+                renderNoticia(noticia);
+                setupShareButtons(noticia);
+            } catch (error) {
+                console.error('Error cargando noticia:', error);
+                document.getElementById('articleBody').innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--color-orange); margin-bottom: 1rem;"></i>
+                        <h3>Noticia no encontrada</h3>
+                        <p style="color: var(--color-gray); margin-bottom: 2rem;">Lo sentimos, no pudimos cargar esta noticia.</p>
+                        <a href="notikonscio.html" class="btn btn-primary">Volver a Notikonscio</a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderNoticia(noticia) {
+            // Actualizar meta title
+            document.getElementById('pageTitle').textContent = `${noticia.titulo} - Notikonscio`;
+            document.getElementById('pageDescription').content = noticia.resumen;
+
+            // Hero
+            document.getElementById('heroImage').src = noticia.imagen;
+            document.getElementById('heroImage').alt = noticia.titulo;
+            document.getElementById('articleCategory').textContent = noticia.categoria;
+            document.getElementById('articleTitle').textContent = noticia.titulo;
+            
+            const fecha = new Date(noticia.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('articleDate').textContent = fechaFormateada;
+            document.getElementById('articleAuthor').textContent = noticia.autor;
+
+            // Contenido
+            document.getElementById('articleBody').innerHTML = noticia.contenido;
+        }
+
+        function setupShareButtons(noticia) {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(noticia.titulo);
+            const text = encodeURIComponent(noticia.resumen);
+
+            document.getElementById('shareFacebook').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+            document.getElementById('shareLinkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+            document.getElementById('shareWhatsapp').href = `https://wa.me/?text=${title}%20${url}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadNoticia);
+    </script>
+    <script src="js/chatbot.js"></script>
+</body>
+</html>

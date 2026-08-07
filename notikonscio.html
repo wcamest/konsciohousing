@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <title>Notikonscio - Blog del Proyecto Konscio3D Housing</title>
+    <meta name="description" content="Noticias, avances y reflexiones sobre el proyecto Konscio3D Housing: comunidad, tecnología 3D y nuevos modelos de vivienda colaborativa.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <style>
+        /* Estilos específicos del blog */
+        .blog-hero {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.95) 0%, rgba(26, 188, 156, 0.95) 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: var(--color-white);
+        }
+        
+        .blog-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+        
+        .blog-filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 2rem 0;
+        }
+        
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-white);
+            border: 2px solid var(--color-light);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-gray);
+            transition: var(--transition);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--color-green);
+            color: var(--color-white);
+            border-color: var(--color-green);
+            transform: translateY(-2px);
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .blog-card {
+            background: var(--color-white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .blog-card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: var(--color-light);
+        }
+        
+        .blog-card-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--color-green);
+            color: var(--color-white);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .blog-card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .blog-card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        
+        .blog-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .blog-card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--color-dark);
+            line-height: 1.3;
+        }
+        
+        .blog-card-excerpt {
+            color: var(--color-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+        
+        .blog-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-light);
+        }
+        
+        .blog-card-author {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+        }
+        
+        .blog-card-link {
+            color: var(--color-green);
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .blog-card-link:hover {
+            gap: 0.75rem;
+        }
+        
+        .featured-badge {
+            background: var(--color-orange) !important;
+        }
+        
+        .blog-empty {
+            text-align: center;
+            padding: 4rem 0;
+            color: var(--color-gray);
+        }
+        
+        .blog-empty i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        @media (max-width: 768px) {
+            .blog-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P84KKG7R');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P84KKG7R"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="images/logo-konscio3d.svg" alt="Konscio3D Housing Logo" class="logo-image">
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="el-proyecto.html">El Proyecto</a></li>
+                <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+                <li><a href="modelo-piloto.html">Modelo Piloto</a></li>
+                <li><a href="tecnologia.html">Tecnología</a></li>
+                <li><a href="vision-futuro.html">Visión y Futuro</a></li>
+                <li><a href="notikonscio.html" class="active">Notikonscio</a></li>
+                <li><a href="unete.html" class="btn-primary-nav">Únete</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1><i class="fas fa-newspaper"></i> Notikonscio</h1>
+            <p>Noticias, avances y reflexiones sobre comunidad, tecnología y nuevas formas de construir vivienda</p>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-filters">
+                <button class="filter-btn active" data-filter="todos">
+                    <i class="fas fa-th"></i> Todas
+                </button>
+                <button class="filter-btn" data-filter="Proyecto">
+                    <i class="fas fa-rocket"></i> Proyecto
+                </button>
+                <button class="filter-btn" data-filter="Tecnología">
+                    <i class="fas fa-cogs"></i> Tecnología
+                </button>
+                <button class="filter-btn" data-filter="Comunidad">
+                    <i class="fas fa-users"></i> Comunidad
+                </button>
+                <button class="filter-btn" data-filter="Eventos">
+                    <i class="fas fa-calendar"></i> Eventos
+                </button>
+                <button class="filter-btn" data-filter="Avances">
+                    <i class="fas fa-chart-line"></i> Avances
+                </button>
+            </div>
+
+            <!-- Grid de noticias -->
+            <div class="blog-grid" id="blogGrid">
+                <!-- Las noticias se cargan dinámicamente aquí -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--color-green);"></i>
+                    <p style="margin-top: 1rem; color: var(--color-gray);">Cargando noticias...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Proyecto</h4>
+                    <ul>
+                        <li><a href="modelo-piloto.html">Modelo Piloto</a></li>
+                        <li><a href="tecnologia.html">Tecnología</a></li>
+                        <li><a href="vision-futuro.html">Visión y Futuro</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Fundación</h4>
+                    <ul>
+                        <li><a href="quienes-somos.html">Fundación Proyecta</a></li>
+                        <li><a href="quienes-somos.html#origen">Origen del proyecto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Comunidad</h4>
+                    <ul>
+                        <li><a href="unete.html">Únete</a></li>
+                        <li><a href="vision-futuro.html#manifiesto">Manifiesto Konscio3D</a></li>
+                        <li><a href="notikonscio.html">Notikonscio</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col footer-brand">
+                    <img src="images/logo-konscio3d-footer.svg" alt="Konscio3D Housing" class="footer-logo">
+                    <p class="footer-tagline">Construir vivienda. Construir comunidad. Construir futuro.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/ProyectaKonscio/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/proyectakonscio/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/fundacionproyectakonscio-0b44b59" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="aviso-legal.html">Aviso Legal</a></li>
+                        <li><a href="politica-privacidad.html">Política de Privacidad</a></li>
+                        <li><a href="politica-cookies.html">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Konscio3D Housing - Fundación Proyecta. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/noticias-loader.js"></script>
+    <script>
+        // Cargar y mostrar noticias
+        let allNoticias = [];
+        let currentFilter = 'todos';
+
+        async function loadNoticias() {
+            try {
+                // Cargar noticias desde archivos Markdown (Decap CMS)
+                allNoticias = await window.NoticiasLoader.loadAllNoticias();
+                renderNoticias(allNoticias);
+            } catch (error) {
+                console.error('Error cargando noticias:', error);
+                document.getElementById('blogGrid').innerHTML = `
+                    <div class="blog-empty" style="grid-column: 1/-1;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Error al cargar noticias</h3>
+                        <p>Por favor, intenta recargar la página</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderNoticias(noticias) {
+            const grid = document.getElementById('blogGrid');
+            
+            if (noticias.length === 0) {
+                grid.innerHTML = `
+                    <div class="blog-empty" style="grid-column: 1/-1;">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>No hay noticias disponibles</h3>
+                        <p>Pronto publicaremos contenido nuevo</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = noticias.map(noticia => {
+                const fecha = new Date(noticia.fecha);
+                const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                return `
+                    <article class="blog-card" data-categoria="${noticia.categoria}" onclick="window.location.href='noticia-detalle.html?id=${noticia.id}'">
+                        <div style="position: relative;">
+                            <img src="${noticia.imagen}" alt="${noticia.titulo}" class="blog-card-image" loading="lazy">
+                            <span class="blog-card-badge ${noticia.destacada ? 'featured-badge' : ''}">
+                                ${noticia.destacada ? '⭐ Destacada' : noticia.categoria}
+                            </span>
+                        </div>
+                        <div class="blog-card-content">
+                            <div class="blog-card-meta">
+                                <span><i class="far fa-calendar"></i> ${fechaFormateada}</span>
+                                <span><i class="fas fa-tag"></i> ${noticia.categoria}</span>
+                            </div>
+                            <h2 class="blog-card-title">${noticia.titulo}</h2>
+                            <p class="blog-card-excerpt">${noticia.resumen}</p>
+                            <div class="blog-card-footer">
+                                <span class="blog-card-author">
+                                    <i class="fas fa-user"></i> ${noticia.autor}
+                                </span>
+                                <a href="noticia-detalle.html?id=${noticia.id}" class="blog-card-link" onclick="event.stopPropagation();">
+                                    Leer más <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function filterNoticias(categoria) {
+            currentFilter = categoria;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${categoria}"]`).classList.add('active');
+
+            // Filtrar noticias
+            if (categoria === 'todos') {
+                renderNoticias(allNoticias);
+            } else {
+                const filtered = allNoticias.filter(n => n.categoria === categoria);
+                renderNoticias(filtered);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNoticias();
+
+            // Filtros
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    filterNoticias(filter);
+                });
+            });
+        });
+    </script>
+    <script src="js/chatbot.js"></script>
+</body>
+</html>

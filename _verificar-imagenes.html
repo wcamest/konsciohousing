@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Imágenes - Konscio3D Housing</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #2ECC71;
+            text-align: center;
+        }
+        .section {
+            background: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .image-container {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .icon-small {
+            width: 80px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Verificación de Imágenes - Konscio3D Housing</h1>
+
+    <div class="section">
+        <h2>📊 Estado de las Imágenes</h2>
+        <div class="status success">
+            ✅ <strong>2 imágenes encontradas</strong> en la carpeta /images/
+        </div>
+        <ul>
+            <li>✅ <strong>impresora-3d-construccion.png</strong> (690 KB)</li>
+            <li>✅ <strong>ecosistema-konscio3d.png</strong> (1.6 MB)</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🖨️ Imagen 1: Icono Impresora 3D Construcción</h2>
+        <div class="info">
+            <strong>Aparece en:</strong>
+            <ul>
+                <li>index.html - Sección "Qué es Konscio3D" (tarjeta Tecnología 3D)</li>
+                <li>modelo-piloto.html - Tarjeta principal del piloto</li>
+                <li>tecnologia.html - Hero visual de la página</li>
+            </ul>
+        </div>
+        
+        <div class="image-container">
+            <h3>Vista Previa (Tamaño pequeño - como aparece en las tarjetas):</h3>
+            <img src="images/impresora-3d-construccion.png" alt="Icono Impresora 3D" class="icon-small">
+        </div>
+
+        <div class="image-container">
+            <h3>Vista Previa (Tamaño grande - como aparece en tecnologia.html):</h3>
+            <img src="images/impresora-3d-construccion.png" alt="Impresora 3D Construcción" style="max-width: 400px;">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔵 Imagen 2: Gráfico Ecosistema Konscio3D</h2>
+        <div class="info">
+            <strong>Aparece en:</strong>
+            <ul>
+                <li>index.html - Sección "Ecosistema Visual" (imagen grande centrada)</li>
+                <li>vision-futuro.html - Sección "El Ecosistema Completo"</li>
+            </ul>
+        </div>
+        
+        <div class="image-container">
+            <h3>Vista Previa (Tamaño completo):</h3>
+            <img src="images/ecosistema-konscio3d.png" alt="Ecosistema Konscio3D Housing" style="max-width: 900px;">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>⚠️ ¿Las imágenes NO se ven?</h2>
+        <div class="status error">
+            <strong>Posibles causas y soluciones:</strong>
+        </div>
+        
+        <h3>1. Estás abriendo con file:// (archivo local)</h3>
+        <p><strong>Solución:</strong> Usa un servidor local. Opciones:</p>
+        <ul>
+            <li><strong>Python:</strong> <code>python -m http.server 8000</code> y abre http://localhost:8000</li>
+            <li><strong>Node.js:</strong> <code>npx http-server</code></li>
+            <li><strong>VS Code:</strong> Instala extensión "Live Server" y haz clic derecho → "Open with Live Server"</li>
+        </ul>
+
+        <h3>2. Las rutas son incorrectas</h3>
+        <p><strong>Verificación:</strong> Las rutas en el HTML usan <code>images/nombre.png</code> (relativas)</p>
+        <p>✅ Esto es correcto si la estructura es:</p>
+        <pre style="background: #f0f0f0; padding: 1rem; border-radius: 5px;">
+konscio3d-housing/
+├── index.html
+├── tecnologia.html
+└── images/
+    ├── impresora-3d-construccion.png
+    └── ecosistema-konscio3d.png
+        </pre>
+
+        <h3>3. Navegador bloqueando recursos locales</h3>
+        <p><strong>Solución:</strong> Publicar en un servidor web o usar localhost</p>
+    </div>
+
+    <div class="section">
+        <h2>✅ ¿Se ven las imágenes arriba en esta página?</h2>
+        <div class="info">
+            <strong>SI se ven:</strong> Las imágenes están bien y el problema es cómo abres los archivos.
+        </div>
+        <div class="status error">
+            <strong>NO se ven:</strong> Puede ser un problema de estructura de carpetas o rutas.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🚀 Solución Rápida Recomendada</h2>
+        <p><strong>Publicar la web en Netlify (gratis y en 2 minutos):</strong></p>
+        <ol>
+            <li>Ve a <a href="https://app.netlify.com/drop" target="_blank">netlify.com/drop</a></li>
+            <li>Arrastra la carpeta completa del proyecto</li>
+            <li>Netlify te dará una URL pública (ej: https://nombre-random.netlify.app)</li>
+            <li>Ahí verás TODO funcionando correctamente</li>
+        </ol>
+    </div>
+
+    <div class="section" style="text-align: center; background: #2ECC71; color: white;">
+        <h2>📞 ¿Necesitas ayuda?</h2>
+        <p>Dime qué ves en ESTA página y te ayudo a solucionar el problema.</p>
+    </div>
+</body>
+</html>

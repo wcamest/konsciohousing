@@ -1,0 +1,23 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Logo compacto solo icono para móvil -->
+  <g id="logo-icon-mobile">
+    <!-- Capa trasera (más clara) -->
+    <path d="M8 22L20 12L32 22V34C32 35.1 31.1 36 30 36H10C8.9 36 8 35.1 8 34V22Z" fill="#A8E6CF" opacity="0.6"/>
+    
+    <!-- Capa media -->
+    <path d="M6 20L20 8L34 20V34C34 35.1 33.1 36 32 36H8C6.9 36 6 35.1 6 34V20Z" fill="#2ECC71"/>
+    
+    <!-- Capa frontal (más oscura) -->
+    <path d="M4 18L20 4L36 18V34C36 35.1 35.1 36 34 36H6C4.9 36 4 35.1 4 34V18Z" fill="#27AE60"/>
+    
+    <!-- Detalle puerta -->
+    <rect x="16" y="24" width="8" height="12" rx="1" fill="white" opacity="0.9"/>
+    
+    <!-- Detalle ventana -->
+    <circle cx="28" cy="22" r="2.5" fill="white" opacity="0.9"/>
+    
+    <!-- Badge "3D" -->
+    <circle cx="32" cy="10" r="7" fill="#2C3E50"/>
+    <text x="32" y="13.5" font-family="Inter, sans-serif" font-size="8" font-weight="800" fill="white" text-anchor="middle">3D</text>
+  </g>
+</svg>
