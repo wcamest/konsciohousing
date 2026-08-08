@@ -1,0 +1,25 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+
+# Dependencias instaladas por Composer
+/vendor/
+
+# Datos generados en producción
+/storage/
+
+# Logs
+*.log
+
+# Paquetes/backups
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# Sistema/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
