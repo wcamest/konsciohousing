@@ -2481,7 +2481,26 @@ select:focus-visible {
    RESPONSIVE DESIGN
    ================================ */
 
-@media (max-width: 768px) {
+/* Breakpoints Progresivos */
+
+/* Tablet y dispositivos medianos */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+    
+    .problem-grid,
+    .tech-showcase-content,
+    .bolivia-content,
+    .europa-content,
+    .story-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+/* Móvil estándar (768px y menos) */
+@media screen and (max-width: 768px) {
     .logo-image {
         height: 40px;
     }
@@ -2490,13 +2509,11 @@ select:focus-visible {
         display: flex;
     }
     
-    /* SOLUCIÓN: Forzar que la sección del problema/terreno se apile en una sola columna */
     .problem-grid {
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
     
-    /* Controlar el orden exacto: Primero el bloque verde (visual), luego el texto explicativo */
     .problem-visual {
         order: 1;
     }
@@ -2505,7 +2522,6 @@ select:focus-visible {
         order: 2;
     }
 
-    /* Tech Showcase responsive */
     .tech-showcase-content {
         display: grid;
         grid-template-columns: 1fr;
@@ -2557,9 +2573,22 @@ select:focus-visible {
     .hero-ctas {
         flex-direction: column;
     }
-    
-    .hero-ctas .btn {
-        width: 100%;
-        justify-content: center;
+}
+
+/* Móviles pequeños (480px y menos) */
+@media screen and (max-width: 480px) {
+    section {
+        padding: 40px 0;
+    }
+
+    .section-header h2 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Dispositivos muy estrechos (360px y menos) */
+@media screen and (max-width: 360px) {
+    body {
+        font-size: 14px;
     }
 }
