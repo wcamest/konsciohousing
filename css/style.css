@@ -2490,7 +2490,22 @@ select:focus-visible {
         display: flex;
     }
     
-    /* Tech Showcase responsive - Modificado para apilarse correctamente en móvil */
+    /* SOLUCIÓN: Forzar que la sección del problema/terreno se apile en una sola columna */
+    .problem-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    /* Controlar el orden exacto: Primero el bloque verde (visual), luego el texto explicativo */
+    .problem-visual {
+        order: 1;
+    }
+    
+    .problem-text {
+        order: 2;
+    }
+
+    /* Tech Showcase responsive */
     .tech-showcase-content {
         display: grid;
         grid-template-columns: 1fr;
@@ -2535,7 +2550,6 @@ select:focus-visible {
         left: 0;
     }
     
-    .problem-grid,
     .story-grid {
         grid-template-columns: 1fr;
     }
