@@ -2457,7 +2457,7 @@ select:focus-visible {
 
 /* Mejorar contraste de textos grises */
 .text-muted {
-    color: #5A6268; /* Más oscuro que el gris original para mejor contraste */
+    color: #5A6268;
 }
 
 /* Reducir movimiento para usuarios con preferencias de accesibilidad */
@@ -2490,8 +2490,9 @@ select:focus-visible {
         display: flex;
     }
     
-    /* Tech Showcase responsive */
+    /* Tech Showcase responsive - Modificado para apilarse correctamente en móvil */
     .tech-showcase-content {
+        display: grid;
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
@@ -2502,8 +2503,8 @@ select:focus-visible {
     
     .tech-showcase-text {
         order: 2;
-        text-align: center;
-        align-items: center;
+        text-align: left;
+        align-items: flex-start;
     }
     
     .tech-showcase-text h3 {
