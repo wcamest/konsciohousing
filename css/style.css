@@ -2477,6 +2477,7 @@ select:focus-visible {
     /* Opcional: añadir estilos para modo oscuro si lo deseas */
 }
 
+.europa-content,
 .bolivia-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
