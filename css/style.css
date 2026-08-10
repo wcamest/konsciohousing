@@ -2477,6 +2477,14 @@ select:focus-visible {
     /* Opcional: añadir estilos para modo oscuro si lo deseas */
 }
 
+.bolivia-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    align-items: start;
+}
+
 /* ================================
    RESPONSIVE DESIGN
    ================================ */
@@ -2572,6 +2580,11 @@ select:focus-visible {
     
     .hero-ctas {
         flex-direction: column;
+    }
+
+    .bolivia-content {
+        gap: var(--space-lg);
+        margin-top: var(--space-lg);
     }
 }
 
