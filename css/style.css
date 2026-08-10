@@ -2582,6 +2582,7 @@ select:focus-visible {
         flex-direction: column;
     }
 
+    .europa-content,
     .bolivia-content {
         gap: var(--space-lg);
         margin-top: var(--space-lg);
