@@ -76,24 +76,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ================================
-    // SMOOTH SCROLL
-    // ================================
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href !== '#') {
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    const offsetTop = target.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            }
+// SMOOTH SCROLL
+// ================================
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+
+        // El enlace pudo haber cambiado dinámicamente después de
+        // DOMContentLoaded (por ejemplo, los botones de compartir).
+        // Solo aplicar smooth scroll a anchors internos reales.
+        if (!href || href === '#' || !href.startsWith('#')) {
+            return;
+        }
+
+        const target = document.querySelector(href);
+
+        if (!target) {
+            return;
+        }
+
+        e.preventDefault();
+
+        const offsetTop = target.offsetTop - 80;
+
+        window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
         });
     });
+});
     
     // ================================
     // ANIMACIONES AL HACER SCROLL
