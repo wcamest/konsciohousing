@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <style>
         /* Estilos específicos del blog */
@@ -340,10 +341,13 @@
             } catch (error) {
                 console.error('Error cargando noticias:', error);
                 document.getElementById('blogGrid').innerHTML = `
-                    <div class="blog-empty" style="grid-column: 1/-1;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <h3>Error al cargar noticias</h3>
-                        <p>Por favor, intenta recargar la página</p>
+                    <div class="blog-empty" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--color-orange); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--color-dark); margin-bottom: 1rem;">Error al cargar noticias</h3>
+                        <p style="color: var(--color-gray); margin-bottom: 2rem;">No pudimos cargar las noticias. Por favor, verifica tu conexión e intenta de nuevo.</p>
+                        <button onclick="location.reload()" class="btn" style="background: var(--color-green); color: white; padding: 1rem 2rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-redo"></i> Recargar página
+                        </button>
                     </div>
                 `;
             }
@@ -374,7 +378,11 @@
                 return `
                     <article class="blog-card" data-categoria="${noticia.categoria}" onclick="window.location.href='noticia-detalle.html?id=${noticia.id}'">
                         <div style="position: relative;">
-                            <img src="${noticia.imagen}" alt="${noticia.titulo}" class="blog-card-image" loading="lazy">
+                            <img src="${noticia.imagen}" 
+                                 alt="${noticia.titulo}" 
+                                 class="blog-card-image" 
+                                 loading="lazy"
+                                 onerror="this.src='images/comunidad-sostenible-1.jpg'">
                             <span class="blog-card-badge ${noticia.destacada ? 'featured-badge' : ''}">
                                 ${noticia.destacada ? '⭐ Destacada' : noticia.categoria}
                             </span>

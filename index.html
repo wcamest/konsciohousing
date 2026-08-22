@@ -40,6 +40,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/chatbot.css">
     
     <!-- Schema.org JSON-LD -->
@@ -165,67 +166,67 @@
         </div>
     </section>
 
-<!-- El Problema -->
-<section class="problem-section">
-    <div class="container">
-        <div class="section-header text-center">
-            <span class="section-label">El Contexto</span>
-            <h2>La crisis global de acceso a la vivienda</h2>
-        </div>
-        <div class="problem-grid">
-            <div class="problem-visual problem-columns">
-                <!-- COLUMNA EUROPA -->
-                <div class="problem-col">
-                    <h4 class="problem-col-title europe-title">
-                        <i class="fas fa-globe-europe"></i> Europa
-                    </h4>
-                    <div class="stat-card">
-                        <div class="stat-number">40%</div>
-                        <div class="stat-label">de jóvenes europeos<br>no puede independizarse</div>
+    <!-- El Problema -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-label">El Contexto</span>
+                <h2>La crisis global de acceso a la vivienda</h2>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-visual" style="display: flex; gap: 40px; flex-wrap: wrap;">
+                    <!-- COLUMNA EUROPA -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4 style="color: #3498DB; text-align: center; margin-bottom: 20px; font-size: 1.2rem;">
+                            <i class="fas fa-globe-europe"></i> Europa
+                        </h4>
+                        <div class="stat-card">
+                            <div class="stat-number">40%</div>
+                            <div class="stat-label">de jóvenes europeos<br>no puede independizarse</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">€300-600K</div>
+                            <div class="stat-label">Precio medio vivienda<br>en ciudades españolas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">50%+</div>
+                            <div class="stat-label">del salario destinado<br>a alquiler o hipoteca</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">€300-600K</div>
-                        <div class="stat-label">Precio medio vivienda<br>en ciudades españolas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">50%+</div>
-                        <div class="stat-label">del salario destinado<br>a alquiler o hipoteca</div>
+                    
+                    <!-- COLUMNA AMÉRICA LATINA -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4 style="color: #2ECC71; text-align: center; margin-bottom: 20px; font-size: 1.2rem;">
+                            <i class="fas fa-globe-americas"></i> América Latina
+                        </h4>
+                        <div class="stat-card">
+                            <div class="stat-number">21%</div>
+                            <div class="stat-label">de latinoamericanos viven<br>en asentamientos informales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">110M</div>
+                            <div class="stat-label">personas en América Latina<br>sin vivienda digna</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$40K-120K</div>
+                            <div class="stat-label">Precio medio vivienda<br>en ciudades principales</div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- COLUMNA AMÉRICA LATINA -->
-                <div class="problem-col">
-                    <h4 class="problem-col-title latam-title">
-                        <i class="fas fa-globe-americas"></i> América Latina
-                    </h4>
-                    <div class="stat-card">
-                        <div class="stat-number">21%</div>
-                        <div class="stat-label">de latinoamericanos viven<br>en asentamientos informales</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">110M</div>
-                        <div class="stat-label">personas en América Latina<br>sin vivienda digna</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">$40K-120K</div>
-                        <div class="stat-label">Precio medio vivienda<br>en ciudades principales</div>
+                <div class="problem-text">
+                    <p class="lead">El alto costo de la vivienda formal y la falta de acceso a financiación impiden que millones de familias en Europa, América Latina y Norteamérica puedan acceder a una vivienda digna.</p>
+                    <p>En <strong>España</strong>, los jóvenes tardan 10+ años en independizarse y destinarían el 60% de su salario a una hipoteca. En <strong>Europa</strong>, el 40% de menores de 35 años no puede acceder a vivienda propia. En <strong>América Latina</strong>, 110 millones viven en asentamientos informales (favelas, villas miseria, barriadas). Esta crisis global no solo frena proyectos de vida, sino que perpetúa desigualdades estructurales.</p>
+                    <div class="highlight-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <p><strong>¿Y si existiera otra forma?</strong></p>
+                            <p>Frente a este problema global, comunidades en todo el mundo están explorando nuevas formas de organizarse para construir su propia vivienda: autoconstrucción organizada con tecnología avanzada, cooperación y modelos económicos colaborativos.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="problem-text">
-                <p class="lead">El alto costo de la vivienda formal y la falta de acceso a financiación impiden que millones de familias en Europa, América Latina y Norteamérica puedan acceder a una vivienda digna.</p>
-                <p>En <strong>España</strong>, los jóvenes tardan 10+ años en independizarse y destinarían el 60% de su salario a una hipoteca. En <strong>Europa</strong>, el 40% de menores de 35 años no puede acceder a vivienda propia. En <strong>América Latina</strong>, 110 millones viven en asentamientos informales (favelas, villas miseria, barriadas). Esta crisis global no solo frena proyectos de vida, sino que perpetúa desigualdades estructurales.</p>
-                <div class="highlight-box">
-                    <i class="fas fa-lightbulb"></i>
-                    <div>
-                        <p><strong>¿Y si existiera otra forma?</strong></p>
-                        <p>Frente a este problema global, comunidades en todo el mundo están explorando nuevas formas de organizarse para construir su propia vivienda: autoconstrucción organizada con tecnología avanzada, cooperación y modelos económicos colaborativos.</p>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Tecnología de Construcción 3D - Animación -->
     <section class="tech-showcase">
@@ -603,7 +604,7 @@
                 <p class="section-intro">El primer proyecto Konscio3D en América Latina donde demostraremos cómo las comunidades pueden organizarse para construir su propio futuro</p>
             </div>
             
-            <div class="bolivia-content">
+            <div class="bolivia-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 60px; align-items: start;">
                 <div class="bolivia-visual">
                     <div style="background: linear-gradient(135deg, #2ECC71, #27AE60); border-radius: 20px; padding: 40px; color: white; margin-bottom: 30px;">
                         <h3 style="margin-top: 0; font-size: 1.8rem;">El Terreno</h3>
@@ -684,7 +685,7 @@
                 <p class="section-intro">Buscamos territorios en España y Portugal donde comunidades organizadas quieran construir vivienda colaborativa con tecnología 3D</p>
             </div>
             
-            <div class="europa-content">
+            <div class="europa-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 60px; align-items: start;">
                 <div class="europa-text">
                     <h3 style="color: #2c3e50; font-size: 1.8rem; margin-bottom: 20px;">¿Por qué España y Portugal?</h3>
                     <p class="lead" style="font-size: 1.15rem; color: #555; line-height: 1.7;">La Península Ibérica enfrenta una <strong style="color: #3498DB;">crisis habitacional severa</strong> donde este modelo puede generar impacto real:</p>

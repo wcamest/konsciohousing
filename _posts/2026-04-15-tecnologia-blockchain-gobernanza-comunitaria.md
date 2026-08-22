@@ -3,7 +3,7 @@ titulo: "Tecnología blockchain aplicada a la gobernanza comunitaria"
 fecha: 2026-04-15
 autor: "Fundación Proyecta"
 categoria: "Tecnología"
-imagen: "/images/blockchain-comunidad.jpg"
+imagen: "images/smart-community.jpg"
 resumen: "Exploramos cómo la tecnología blockchain permite crear sistemas de gobernanza transparentes y democráticos en comunidades de vivienda."
 destacada: false
 tags:
