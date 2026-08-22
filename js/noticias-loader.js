@@ -107,7 +107,7 @@ function markdownToHtml(markdown) {
  */
 async function loadNoticia(filename) {
     try {
-        const response = await fetch(`/_posts/${filename}`);
+        const response = await fetch(`_posts/${filename}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const markdownText = await response.text();
@@ -122,7 +122,7 @@ async function loadNoticia(filename) {
             fecha: metadata.fecha || new Date().toISOString().split('T')[0],
             autor: metadata.autor || 'Fundación Proyecta',
             categoria: metadata.categoria || 'General',
-            imagen: metadata.imagen || '/images/default-noticia.jpg',
+            imagen: metadata.imagen || 'images/comunidad-sostenible-1.jpg',
             resumen: metadata.resumen || '',
             contenido: markdownToHtml(content),
             destacada: metadata.destacada === true || metadata.destacada === 'true',

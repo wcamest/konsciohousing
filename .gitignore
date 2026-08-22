@@ -8,6 +8,7 @@
 
 # Datos generados en producción
 /storage/
+/node_modules
 
 # Logs
 *.log
@@ -23,3 +24,5 @@
 Thumbs.db
 .idea/
 .vscode/
+
+.stackbit/

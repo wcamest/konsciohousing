@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <style>
         .article-hero {
@@ -347,7 +348,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const noticiaId = urlParams.get('id');
 
-        async function loadNoticia() {
+        async function loadNoticiaDetalle() {
             if (!noticiaId) {
                 window.location.href = 'notikonscio.html';
                 return;
@@ -365,12 +366,20 @@
                 setupShareButtons(noticia);
             } catch (error) {
                 console.error('Error cargando noticia:', error);
+                document.getElementById('articleHero').style.display = 'none';
                 document.getElementById('articleBody').innerHTML = `
-                    <div style="text-align: center; padding: 3rem;">
-                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--color-orange); margin-bottom: 1rem;"></i>
-                        <h3>Noticia no encontrada</h3>
-                        <p style="color: var(--color-gray); margin-bottom: 2rem;">Lo sentimos, no pudimos cargar esta noticia.</p>
-                        <a href="notikonscio.html" class="btn btn-primary">Volver a Notikonscio</a>
+                    <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                        <i class="fas fa-exclamation-circle" style="font-size: 4rem; color: var(--color-orange); margin-bottom: 1.5rem;"></i>
+                        <h2 style="color: var(--color-dark); margin-bottom: 1rem; font-size: 2rem;">Noticia no encontrada</h2>
+                        <p style="color: var(--color-gray); margin-bottom: 2rem; font-size: 1.1rem;">Lo sentimos, no pudimos cargar esta noticia. Es posible que haya sido eliminada o que la URL sea incorrecta.</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="notikonscio.html" class="btn" style="background: var(--color-green); color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 10px; font-weight: 600; display: inline-block;">
+                                <i class="fas fa-arrow-left"></i> Volver a Notikonscio
+                            </a>
+                            <button onclick="location.reload()" class="btn" style="background: var(--color-blue); color: white; padding: 1rem 2rem; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">
+                                <i class="fas fa-redo"></i> Intentar de nuevo
+                            </button>
+                        </div>
                     </div>
                 `;
             }
@@ -411,7 +420,7 @@
             document.getElementById('shareWhatsapp').href = `https://wa.me/?text=${title}%20${url}`;
         }
 
-        document.addEventListener('DOMContentLoaded', loadNoticia);
+        document.addEventListener('DOMContentLoaded', loadNoticiaDetalle);
     </script>
     <script src="js/chatbot.js"></script>
 </body>

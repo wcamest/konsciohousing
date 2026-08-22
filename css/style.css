@@ -2457,7 +2457,7 @@ select:focus-visible {
 
 /* Mejorar contraste de textos grises */
 .text-muted {
-    color: #5A6268;
+    color: #5A6268; /* Más oscuro que el gris original para mejor contraste */
 }
 
 /* Reducir movimiento para usuarios con preferencias de accesibilidad */
@@ -2477,39 +2477,11 @@ select:focus-visible {
     /* Opcional: añadir estilos para modo oscuro si lo deseas */
 }
 
-.europa-content,
-.bolivia-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    margin-top: 60px;
-    align-items: start;
-}
-
 /* ================================
    RESPONSIVE DESIGN
    ================================ */
 
-/* Breakpoints Progresivos */
-
-/* Tablet y dispositivos medianos */
-@media screen and (max-width: 1024px) {
-    .container {
-        padding: 0 1.5rem;
-    }
-    
-    .problem-grid,
-    .tech-showcase-content,
-    .bolivia-content,
-    .europa-content,
-    .story-grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-    }
-}
-
-/* Móvil estándar (768px y menos) */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     .logo-image {
         height: 40px;
     }
@@ -2518,21 +2490,8 @@ select:focus-visible {
         display: flex;
     }
     
-    .problem-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-    }
-    
-    .problem-visual {
-        order: 1;
-    }
-    
-    .problem-text {
-        order: 2;
-    }
-
+    /* Tech Showcase responsive */
     .tech-showcase-content {
-        display: grid;
         grid-template-columns: 1fr;
         gap: var(--space-lg);
     }
@@ -2543,8 +2502,8 @@ select:focus-visible {
     
     .tech-showcase-text {
         order: 2;
-        text-align: left;
-        align-items: flex-start;
+        text-align: center;
+        align-items: center;
     }
     
     .tech-showcase-text h3 {
@@ -2575,6 +2534,7 @@ select:focus-visible {
         left: 0;
     }
     
+    .problem-grid,
     .story-grid {
         grid-template-columns: 1fr;
     }
@@ -2582,28 +2542,9 @@ select:focus-visible {
     .hero-ctas {
         flex-direction: column;
     }
-
-    .europa-content,
-    .bolivia-content {
-        gap: var(--space-lg);
-        margin-top: var(--space-lg);
-    }
-}
-
-/* Móviles pequeños (480px y menos) */
-@media screen and (max-width: 480px) {
-    section {
-        padding: 40px 0;
-    }
-
-    .section-header h2 {
-        font-size: 1.6rem;
-    }
-}
-
-/* Dispositivos muy estrechos (360px y menos) */
-@media screen and (max-width: 360px) {
-    body {
-        font-size: 14px;
+    
+    .hero-ctas .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
