@@ -348,7 +348,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const noticiaId = urlParams.get('id');
 
-        async function loadNoticia() {
+        async function loadNoticiaDetalle() {
             if (!noticiaId) {
                 window.location.href = 'notikonscio.html';
                 return;
@@ -420,7 +420,7 @@
             document.getElementById('shareWhatsapp').href = `https://wa.me/?text=${title}%20${url}`;
         }
 
-        document.addEventListener('DOMContentLoaded', loadNoticia);
+        document.addEventListener('DOMContentLoaded', loadNoticiaDetalle);
     </script>
     <script src="js/chatbot.js"></script>
 </body>
