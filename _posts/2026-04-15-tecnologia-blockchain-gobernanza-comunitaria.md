@@ -1,4 +1,5 @@
 ---
+type: Noticia
 titulo: "Tecnología blockchain aplicada a la gobernanza comunitaria"
 fecha: 2026-04-15
 autor: "Fundación Proyecta"

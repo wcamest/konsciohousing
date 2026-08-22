@@ -1,9 +1,10 @@
 ---
-titulo: "Lanzamiento oficial Konscio3D Housing"
+type: Noticia
+titulo: Lanzamiento oficial Konscio3D Housing
 fecha: 2026-03-10
-autor: "Fundación Proyecta"
-categoria: "Proyecto"
-imagen: "images/comunidad-sostenible-1.jpg"
+autor: Fundación Proyecta
+categoria: Proyecto
+imagen: /images/comunidad-sostenible-1.jpg
 resumen: "Hoy marcamos un hito histórico: el lanzamiento oficial del proyecto Konscio3D Housing, una iniciativa pionera que combina impresión 3D, blockchain y comunidad."
 destacada: true
 tags:
