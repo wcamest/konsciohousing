@@ -11,7 +11,7 @@
 Options -Indexes
 
 # Proteger archivos sensibles
-<FilesMatch "\.(log|md|env|git|gitignore|htaccess|htpasswd)$">
+<FilesMatch "\.(log|env|git|gitignore|htaccess|htpasswd)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
